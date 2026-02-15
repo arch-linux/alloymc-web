@@ -283,6 +283,144 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ===== MODS & PLUGINS UNIFIED ===== */}
+      <section className="relative py-32 px-6 overflow-hidden">
+        <EmberGlow />
+        <div className="relative z-10 mx-auto max-w-6xl">
+          <div className="text-center mb-20">
+            <p className="font-mono text-xs text-ember uppercase tracking-widest mb-4">
+              A question worth asking
+            </p>
+            <h2 className="font-heading text-4xl md:text-5xl font-bold text-stone-100 mb-6 leading-tight">
+              Why are mods and plugins<br />
+              <span className="text-stone-500">still two different things?</span>
+            </h2>
+            <p className="text-stone-400 text-lg max-w-3xl mx-auto leading-relaxed">
+              In every other modding ecosystem, you have &ldquo;mods&rdquo; on one side and
+              &ldquo;plugins&rdquo; on the other. Different loaders. Different APIs. Different
+              folders. Server admins juggling two systems that were never designed to talk
+              to each other. We asked a simple question: <span className="text-stone-200">why?</span>
+            </p>
+          </div>
+
+          {/* The split — how it works everywhere else */}
+          <div className="grid md:grid-cols-2 gap-6 mb-16">
+            <div className="p-8 rounded-2xl border border-obsidian-700/50 bg-obsidian-900/30">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-lg bg-obsidian-700 flex items-center justify-center">
+                  <span className="font-mono text-xs text-stone-500 font-bold">{`{ }`}</span>
+                </div>
+                <div>
+                  <p className="font-heading text-lg font-semibold text-stone-300">&ldquo;Mods&rdquo;</p>
+                  <p className="font-mono text-[11px] text-stone-500 uppercase tracking-widest">Forge / Fabric / NeoForge</p>
+                </div>
+              </div>
+              <ul className="space-y-3">
+                {[
+                  "Modify the game client and server",
+                  "Add new blocks, items, entities, rendering",
+                  "Both client and server must have them installed",
+                  "Use loader-specific APIs",
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-3 text-stone-500">
+                    <span className="mt-1.5 shrink-0 w-1.5 h-1.5 rounded-full bg-stone-600" />
+                    <span className="text-sm leading-relaxed">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="p-8 rounded-2xl border border-obsidian-700/50 bg-obsidian-900/30">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-lg bg-obsidian-700 flex items-center justify-center">
+                  <span className="font-mono text-xs text-stone-500 font-bold">{`/>`}</span>
+                </div>
+                <div>
+                  <p className="font-heading text-lg font-semibold text-stone-300">&ldquo;Plugins&rdquo;</p>
+                  <p className="font-mono text-[11px] text-stone-500 uppercase tracking-widest">Bukkit / Spigot / Paper</p>
+                </div>
+              </div>
+              <ul className="space-y-3">
+                {[
+                  "Server-side only — vanilla clients can connect",
+                  "Land protection, permissions, economy, chat",
+                  "Completely different API and ecosystem",
+                  "Can't coexist with mods without fragile hacks",
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-3 text-stone-500">
+                    <span className="mt-1.5 shrink-0 w-1.5 h-1.5 rounded-full bg-stone-600" />
+                    <span className="text-sm leading-relaxed">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {/* The answer — how Alloy does it */}
+          <div className="p-8 md:p-12 rounded-2xl border border-ember/20 bg-obsidian-900/40">
+            <div className="flex items-center gap-3 mb-8">
+              <div className="w-10 h-10 rounded-lg bg-ember/10 flex items-center justify-center">
+                <span className="font-mono text-sm text-ember font-bold">=</span>
+              </div>
+              <div>
+                <p className="font-heading text-lg font-semibold text-stone-100">In Alloy, everything is a mod.</p>
+                <p className="font-mono text-[11px] text-ember uppercase tracking-widest">One format. One loader. One API.</p>
+              </div>
+            </div>
+
+            <p className="text-stone-400 leading-relaxed mb-8 max-w-3xl">
+              The distinction between &ldquo;mod&rdquo; and &ldquo;plugin&rdquo; is a historical accident — two
+              ecosystems that evolved separately and never merged. In Alloy, there&apos;s no split.
+              A land protection system and a tech mod that adds new machines use the same API,
+              the same loader, the same format. The only difference is one flag:
+            </p>
+
+            {/* Environment examples */}
+            <div className="grid sm:grid-cols-3 gap-4">
+              {[
+                {
+                  env: "server",
+                  example: "GriefPrevention",
+                  desc: "Runs server-side only. Vanilla clients connect without installing anything.",
+                },
+                {
+                  env: "both",
+                  example: "Applied Energistics",
+                  desc: "Registers new blocks, items, and GUIs. Client and server both need it.",
+                },
+                {
+                  env: "client",
+                  example: "Minimap",
+                  desc: "Purely client-side rendering. The server doesn't know or care.",
+                },
+              ].map((item) => (
+                <div
+                  key={item.env}
+                  className="p-5 rounded-xl border border-obsidian-700/50 bg-obsidian-950/60"
+                >
+                  <div className="font-mono text-xs mb-3">
+                    <span className="text-stone-500">{`"environment": `}</span>
+                    <span className="text-ember">{`"${item.env}"`}</span>
+                  </div>
+                  <p className="font-heading text-sm font-semibold text-stone-200 mb-1">
+                    {item.example}
+                  </p>
+                  <p className="text-xs text-stone-500 leading-relaxed">
+                    {item.desc}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            <p className="text-stone-500 text-sm mt-8 leading-relaxed">
+              One <span className="font-mono text-xs text-stone-400">mods/</span> folder.
+              One loader. One API. Server admins don&apos;t juggle two ecosystems.
+              Developers don&apos;t learn two frameworks. The artificial wall is gone.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* ===== CTA ===== */}
       <section className="relative py-32 px-6 overflow-hidden">
         <EmberGlow />
