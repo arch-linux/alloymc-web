@@ -32,6 +32,7 @@
   --animate-spark-rise: spark-rise 2.5s ease-out infinite;
   --animate-float: float 6s ease-in-out infinite;
   --animate-anvil-ring: anvil-ring 6s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  --animate-lava-drip: lava-drip 5s ease-in infinite;
   --animate-pipeline-flow: pipeline-flow 3s ease-in-out infinite;
   --animate-scan-line: scan-line 4s linear infinite;
   --animate-typewriter: typewriter 3s steps(40) 1s both;
@@ -80,6 +81,23 @@
   }
   50% {
     transform: translateY(-12px);
+  }
+}
+
+@keyframes lava-drip {
+  0% {
+    transform: translateY(-10%);
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(110vh);
+    opacity: 0;
   }
 }
 

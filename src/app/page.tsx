@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/Button";
 import { AnvilRings } from "@/components/effects/AnvilRings";
 import { MoltenCracks } from "@/components/effects/MoltenCracks";
+import { LavaDrips } from "@/components/effects/LavaDrips";
 import { EmberGlow } from "@/components/effects/EmberGlow";
 import { ArrowRightIcon } from "@/components/icons";
 
@@ -45,6 +46,7 @@ export default function HomePage() {
         <EmberGlow />
         <MoltenCracks />
         <AnvilRings />
+        <LavaDrips />
 
         <div className="relative z-10 mx-auto max-w-5xl px-6 text-center">
           {/* Monospaced tag */}
