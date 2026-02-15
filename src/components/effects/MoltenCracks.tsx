@@ -22,7 +22,7 @@ export function MoltenCracks() {
         </defs>
 
         {/* Blurred under-layer for glow bleed */}
-        <g stroke="url(#crack-glow)" fill="none" filter="url(#crack-blur)" opacity="0.35">
+        <g stroke="url(#crack-glow)" fill="none" filter="url(#crack-blur)" opacity="0.18">
           <path d="M600 400 L520 320 L480 310 L420 340 L350 300 L280 310 L200 280" strokeWidth="4" />
           <path d="M600 400 L680 340 L740 350 L800 310 L860 330 L950 290 L1020 300" strokeWidth="4" />
           <path d="M600 400 L580 480 L560 530 L520 580 L490 650" strokeWidth="4" />
@@ -32,7 +32,7 @@ export function MoltenCracks() {
         </g>
 
         {/* Sharp main fracture lines */}
-        <g stroke="url(#crack-glow)" fill="none" opacity="0.25">
+        <g stroke="url(#crack-glow)" fill="none" opacity="0.14">
           {/* Central web */}
           <path d="M600 400 L520 320 L480 310 L420 340 L350 300 L280 310 L200 280" strokeWidth="2" />
           <path d="M600 400 L680 340 L740 350 L800 310 L860 330 L950 290 L1020 300" strokeWidth="2" />
@@ -61,24 +61,48 @@ export function MoltenCracks() {
           <path d="M700 270 L660 250 L640 270" strokeWidth="1" />
         </g>
 
-        {/* Bright hotspot under-glow */}
+        {/* Hotspot under-glow — opacity-only pulse */}
         <g fill="#ff6b00" filter="url(#hotspot-glow)">
-          <circle cx="600" cy="400" r="8" opacity="0.5" className="animate-glow-pulse" />
-          <circle cx="520" cy="320" r="5" opacity="0.4" className="animate-glow-pulse" style={{ animationDelay: "1s" }} />
-          <circle cx="680" cy="340" r="5" opacity="0.4" className="animate-glow-pulse" style={{ animationDelay: "2s" }} />
-          <circle cx="580" cy="480" r="4" opacity="0.35" className="animate-glow-pulse" style={{ animationDelay: "1.5s" }} />
-          <circle cx="640" cy="470" r="4" opacity="0.35" className="animate-glow-pulse" style={{ animationDelay: "3s" }} />
-          <circle cx="420" cy="340" r="3" opacity="0.3" className="animate-glow-pulse" style={{ animationDelay: "0.5s" }} />
-          <circle cx="800" cy="310" r="3" opacity="0.3" className="animate-glow-pulse" style={{ animationDelay: "2.5s" }} />
+          <circle cx="600" cy="400" r="6" opacity="0.35">
+            <animate attributeName="opacity" values="0.2;0.5;0.2" dur="4s" repeatCount="indefinite" />
+          </circle>
+          <circle cx="520" cy="320" r="4" opacity="0.25">
+            <animate attributeName="opacity" values="0.15;0.4;0.15" dur="4s" begin="1s" repeatCount="indefinite" />
+          </circle>
+          <circle cx="680" cy="340" r="4" opacity="0.25">
+            <animate attributeName="opacity" values="0.15;0.4;0.15" dur="4s" begin="2s" repeatCount="indefinite" />
+          </circle>
+          <circle cx="580" cy="480" r="3" opacity="0.2">
+            <animate attributeName="opacity" values="0.1;0.35;0.1" dur="4s" begin="1.5s" repeatCount="indefinite" />
+          </circle>
+          <circle cx="640" cy="470" r="3" opacity="0.2">
+            <animate attributeName="opacity" values="0.1;0.35;0.1" dur="4s" begin="3s" repeatCount="indefinite" />
+          </circle>
+          <circle cx="420" cy="340" r="2.5" opacity="0.15">
+            <animate attributeName="opacity" values="0.08;0.3;0.08" dur="4s" begin="0.5s" repeatCount="indefinite" />
+          </circle>
+          <circle cx="800" cy="310" r="2.5" opacity="0.15">
+            <animate attributeName="opacity" values="0.08;0.3;0.08" dur="4s" begin="2.5s" repeatCount="indefinite" />
+          </circle>
         </g>
 
-        {/* Sharp hotspot cores */}
+        {/* Sharp hotspot cores — native SVG animate for true in-place pulse */}
         <g fill="#f0b830">
-          <circle cx="600" cy="400" r="3" opacity="0.7" className="animate-glow-pulse" />
-          <circle cx="520" cy="320" r="2" opacity="0.6" className="animate-glow-pulse" style={{ animationDelay: "1s" }} />
-          <circle cx="680" cy="340" r="2" opacity="0.6" className="animate-glow-pulse" style={{ animationDelay: "2s" }} />
-          <circle cx="580" cy="480" r="1.5" opacity="0.5" className="animate-glow-pulse" style={{ animationDelay: "1.5s" }} />
-          <circle cx="640" cy="470" r="1.5" opacity="0.5" className="animate-glow-pulse" style={{ animationDelay: "3s" }} />
+          <circle cx="600" cy="400" r="2.5" opacity="0.5">
+            <animate attributeName="opacity" values="0.3;0.7;0.3" dur="4s" repeatCount="indefinite" />
+          </circle>
+          <circle cx="520" cy="320" r="1.5" opacity="0.4">
+            <animate attributeName="opacity" values="0.2;0.6;0.2" dur="4s" begin="1s" repeatCount="indefinite" />
+          </circle>
+          <circle cx="680" cy="340" r="1.5" opacity="0.4">
+            <animate attributeName="opacity" values="0.2;0.6;0.2" dur="4s" begin="2s" repeatCount="indefinite" />
+          </circle>
+          <circle cx="580" cy="480" r="1" opacity="0.35">
+            <animate attributeName="opacity" values="0.15;0.5;0.15" dur="4s" begin="1.5s" repeatCount="indefinite" />
+          </circle>
+          <circle cx="640" cy="470" r="1" opacity="0.35">
+            <animate attributeName="opacity" values="0.15;0.5;0.15" dur="4s" begin="3s" repeatCount="indefinite" />
+          </circle>
         </g>
       </svg>
     </div>

@@ -1,15 +1,14 @@
 "use client";
 
 const DRIPS = [
-  { left: 8, delay: 0, duration: 4.5, width: 2, opacity: 0.5 },
-  { left: 18, delay: 2.2, duration: 5.2, width: 2.5, opacity: 0.4 },
-  { left: 31, delay: 0.8, duration: 4.8, width: 1.5, opacity: 0.35 },
-  { left: 42, delay: 3.5, duration: 5.5, width: 2, opacity: 0.45 },
-  { left: 55, delay: 1.5, duration: 4.2, width: 3, opacity: 0.5 },
-  { left: 67, delay: 4.0, duration: 5.0, width: 2, opacity: 0.4 },
-  { left: 76, delay: 0.3, duration: 4.6, width: 1.5, opacity: 0.3 },
-  { left: 85, delay: 2.8, duration: 5.3, width: 2.5, opacity: 0.45 },
-  { left: 93, delay: 1.0, duration: 4.4, width: 2, opacity: 0.35 },
+  { left: 7, delay: 0.5, duration: 6, size: 5 },
+  { left: 19, delay: 3.2, duration: 7, size: 4 },
+  { left: 33, delay: 1.0, duration: 5.5, size: 6 },
+  { left: 48, delay: 4.5, duration: 6.5, size: 4 },
+  { left: 58, delay: 2.0, duration: 5.8, size: 5 },
+  { left: 71, delay: 5.5, duration: 7.2, size: 3 },
+  { left: 82, delay: 0.2, duration: 6.2, size: 5 },
+  { left: 92, delay: 3.8, duration: 5.6, size: 4 },
 ];
 
 export function LavaDrips() {
@@ -18,32 +17,22 @@ export function LavaDrips() {
       {DRIPS.map((drip, i) => (
         <div
           key={i}
-          className="absolute top-0 animate-lava-drip"
+          className="absolute animate-lava-drip"
           style={{
             left: `${drip.left}%`,
+            top: -8,
             animationDelay: `${drip.delay}s`,
             animationDuration: `${drip.duration}s`,
           }}
         >
-          {/* Drip head */}
+          {/* The droplet — a small rounded shape with glow */}
           <div
-            className="rounded-full bg-ember"
             style={{
-              width: `${drip.width * 2}px`,
-              height: `${drip.width * 2}px`,
-              opacity: drip.opacity,
-              boxShadow: `0 0 ${drip.width * 4}px ${drip.width}px rgba(255, 107, 0, 0.3)`,
-            }}
-          />
-          {/* Trail */}
-          <div
-            className="mx-auto -mt-px"
-            style={{
-              width: `${drip.width}px`,
-              height: `${40 + i * 8}px`,
-              opacity: drip.opacity * 0.6,
-              background: `linear-gradient(to bottom, #ff6b00, transparent)`,
-              borderRadius: `${drip.width}px`,
+              width: `${drip.size}px`,
+              height: `${drip.size * 1.4}px`,
+              borderRadius: "50% 50% 50% 50% / 40% 40% 60% 60%",
+              background: "linear-gradient(to bottom, #f0b830, #ff6b00)",
+              boxShadow: `0 0 ${drip.size * 2}px ${drip.size * 0.6}px rgba(255, 107, 0, 0.35), 0 ${drip.size}px ${drip.size * 3}px rgba(255, 107, 0, 0.15)`,
             }}
           />
         </div>
