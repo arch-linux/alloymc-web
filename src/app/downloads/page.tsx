@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { GridOverlay } from "@/components/effects/GridOverlay";
+import { MoltenCracks } from "@/components/effects/MoltenCracks";
 import { DownloadIcon, TerminalIcon, PackageIcon } from "@/components/icons";
 
 export const metadata: Metadata = {
@@ -42,7 +42,7 @@ export default function DownloadsPage() {
   return (
     <>
       <section className="relative py-24 px-6">
-        <GridOverlay />
+        <MoltenCracks />
         <div className="relative mx-auto max-w-3xl text-center">
           <h1 className="font-heading text-4xl md:text-6xl font-bold text-stone-100 mb-6">
             Downloads

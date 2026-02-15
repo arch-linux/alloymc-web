@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/Button";
-import { ForgeSparks } from "@/components/effects/ForgeSparks";
+import { AnvilRings } from "@/components/effects/AnvilRings";
+import { MoltenCracks } from "@/components/effects/MoltenCracks";
 import { EmberGlow } from "@/components/effects/EmberGlow";
-import { GridOverlay } from "@/components/effects/GridOverlay";
 import { ArrowRightIcon } from "@/components/icons";
 
 const PIPELINE_STAGES = [
@@ -43,8 +43,8 @@ export default function HomePage() {
       {/* ===== HERO ===== */}
       <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
         <EmberGlow />
-        <GridOverlay />
-        <ForgeSparks />
+        <MoltenCracks />
+        <AnvilRings />
 
         <div className="relative z-10 mx-auto max-w-5xl px-6 text-center">
           {/* Monospaced tag */}
@@ -225,7 +225,7 @@ export default function HomePage() {
 
       {/* ===== WHAT'S DIFFERENT ===== */}
       <section className="relative py-32 px-6">
-        <GridOverlay />
+        <MoltenCracks />
         <div className="relative z-10 mx-auto max-w-6xl">
           <div className="text-center mb-20">
             <p className="font-mono text-xs text-ember uppercase tracking-widest mb-4">
@@ -285,7 +285,7 @@ export default function HomePage() {
       {/* ===== CTA ===== */}
       <section className="relative py-32 px-6 overflow-hidden">
         <EmberGlow />
-        <ForgeSparks />
+        <AnvilRings />
         <div className="relative z-10 mx-auto max-w-3xl text-center">
           <h2 className="font-heading text-4xl md:text-6xl font-bold text-stone-100 mb-6 leading-tight">
             The best mods haven&apos;t<br />

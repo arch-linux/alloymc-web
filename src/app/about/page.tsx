@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Card } from "@/components/ui/Card";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { GridOverlay } from "@/components/effects/GridOverlay";
+import { MoltenCracks } from "@/components/effects/MoltenCracks";
 import { ZapIcon, LayersIcon, CpuIcon, UsersIcon } from "@/components/icons";
 
 export const metadata: Metadata = {
@@ -78,7 +78,7 @@ export default function AboutPage() {
     <>
       {/* Hero */}
       <section className="relative py-24 px-6">
-        <GridOverlay />
+        <MoltenCracks />
         <div className="relative mx-auto max-w-3xl text-center">
           <h1 className="font-heading text-4xl md:text-6xl font-bold text-stone-100 mb-6">
             Why <span className="text-ember">Alloy</span> Exists

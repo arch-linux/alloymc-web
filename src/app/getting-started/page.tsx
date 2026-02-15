@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { CodeBlock } from "@/components/ui/CodeBlock";
-import { GridOverlay } from "@/components/effects/GridOverlay";
+import { MoltenCracks } from "@/components/effects/MoltenCracks";
 import { EmberGlow } from "@/components/effects/EmberGlow";
 import { Button } from "@/components/ui/Button";
 import { ArrowRightIcon } from "@/components/icons";
@@ -96,7 +96,7 @@ export default function GettingStartedPage() {
     <>
       {/* Hero */}
       <section className="relative py-32 px-6">
-        <GridOverlay />
+        <MoltenCracks />
         <EmberGlow />
         <div className="relative z-10 mx-auto max-w-3xl text-center">
           <p className="font-mono text-xs text-ember uppercase tracking-widest mb-4">

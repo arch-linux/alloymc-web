@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Card } from "@/components/ui/Card";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
-import { GridOverlay } from "@/components/effects/GridOverlay";
+import { MoltenCracks } from "@/components/effects/MoltenCracks";
 import {
   DiscordIcon,
   GitHubIcon,
@@ -20,7 +20,7 @@ export default function CommunityPage() {
   return (
     <>
       <section className="relative py-24 px-6">
-        <GridOverlay />
+        <MoltenCracks />
         <div className="relative mx-auto max-w-3xl text-center">
           <h1 className="font-heading text-4xl md:text-6xl font-bold text-stone-100 mb-6">
             Community
