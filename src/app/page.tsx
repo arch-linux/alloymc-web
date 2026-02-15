@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/Button";
-import { AnvilRings } from "@/components/effects/AnvilRings";
 import { MoltenCracks } from "@/components/effects/MoltenCracks";
 import { LavaDrips } from "@/components/effects/LavaDrips";
 import { EmberGlow } from "@/components/effects/EmberGlow";
@@ -45,7 +44,7 @@ export default function HomePage() {
       <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
         <EmberGlow />
         <MoltenCracks />
-        <AnvilRings />
+
         <LavaDrips />
 
         <div className="relative z-10 mx-auto max-w-5xl px-6 text-center">
@@ -287,7 +286,7 @@ export default function HomePage() {
       {/* ===== CTA ===== */}
       <section className="relative py-32 px-6 overflow-hidden">
         <EmberGlow />
-        <AnvilRings />
+
         <div className="relative z-10 mx-auto max-w-3xl text-center">
           <h2 className="font-heading text-4xl md:text-6xl font-bold text-stone-100 mb-6 leading-tight">
             The best mods haven&apos;t<br />
