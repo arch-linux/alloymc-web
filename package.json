@@ -4,22 +4,33 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "opennextjs-cloudflare build",
+    "preview": "opennextjs-cloudflare preview",
+    "deploy": "opennextjs-cloudflare deploy",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "cf-typegen": "wrangler types",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "wrangler d1 migrations apply alloymc-db --local",
+    "db:push": "drizzle-kit push"
   },
   "dependencies": {
+    "@opennextjs/cloudflare": "^1.16.5",
+    "clsx": "^2",
+    "drizzle-orm": "^0.45.1",
     "next": "^15",
     "react": "^19",
-    "react-dom": "^19",
-    "clsx": "^2"
+    "react-dom": "^19"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@cloudflare/workers-types": "^4.20260214.0",
+    "@tailwindcss/postcss": "^4",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4"
+    "drizzle-kit": "^0.31.9",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "wrangler": "^4.65.0"
   }
 }

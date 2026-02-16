@@ -15,6 +15,10 @@ next-env.d.ts
 .env
 .env.local
 .env.*.local
+.dev.vars
+
+# OpenNext / Cloudflare
+.open-next
 
 # OS
 .DS_Store

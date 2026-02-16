@@ -5,6 +5,7 @@ import Link from "next/link";
 import { AlloyLogo, MenuIcon, CloseIcon, GitHubIcon } from "@/components/icons";
 import { NAV_ITEMS, SITE } from "@/lib/constants";
 import { Button } from "@/components/ui/Button";
+import { UserMenu } from "@/components/auth/UserMenu";
 
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -47,6 +48,7 @@ export function Header() {
           <Button href="/downloads" size="sm">
             Download
           </Button>
+          <UserMenu />
         </div>
 
         {/* Mobile hamburger */}

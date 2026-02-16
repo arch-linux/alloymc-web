@@ -6,6 +6,7 @@ const footerLinks = {
   Project: [
     { label: "About", href: "/about" },
     { label: "Downloads", href: "/downloads" },
+    { label: "Mod Explorer", href: "/mods" },
     { label: "Getting Started", href: "/getting-started" },
   ],
   Resources: [

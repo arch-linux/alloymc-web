@@ -164,3 +164,91 @@ export function ExternalLinkIcon({ className = "w-4 h-4" }: { className?: string
     </svg>
   );
 }
+
+export function StarIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg {...iconProps} className={className}>
+      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+    </svg>
+  );
+}
+
+export function StarFilledIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg {...iconProps} className={className} fill="currentColor">
+      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+    </svg>
+  );
+}
+
+export function SearchIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg {...iconProps} className={className}>
+      <circle cx="11" cy="11" r="8" />
+      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+    </svg>
+  );
+}
+
+export function FilterIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg {...iconProps} className={className}>
+      <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+    </svg>
+  );
+}
+
+export function FlagIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg {...iconProps} className={className}>
+      <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
+      <line x1="4" y1="22" x2="4" y2="15" />
+    </svg>
+  );
+}
+
+export function TrashIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg {...iconProps} className={className}>
+      <polyline points="3 6 5 6 21 6" />
+      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+    </svg>
+  );
+}
+
+export function EditIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg {...iconProps} className={className}>
+      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+    </svg>
+  );
+}
+
+export function ImageIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg {...iconProps} className={className}>
+      <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+      <circle cx="8.5" cy="8.5" r="1.5" />
+      <polyline points="21 15 16 10 5 21" />
+    </svg>
+  );
+}
+
+export function ChevronDownIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg {...iconProps} className={className}>
+      <polyline points="6 9 12 15 18 9" />
+    </svg>
+  );
+}
+
+export function LogOutIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg {...iconProps} className={className}>
+      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+      <polyline points="16 17 21 12 16 7" />
+      <line x1="21" y1="12" x2="9" y2="12" />
+    </svg>
+  );
+}
