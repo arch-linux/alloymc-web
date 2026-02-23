@@ -8,7 +8,7 @@ interface Version {
   downloadUrl: string;
   minecraftVersion: string | null;
   fileSize: number | null;
-  createdAt: string;
+  createdAt: string | Date;
 }
 
 interface VersionListProps {

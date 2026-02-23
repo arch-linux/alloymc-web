@@ -4,13 +4,14 @@
   "main": ".open-next/worker.js",
   "compatibility_date": "2025-12-01",
   "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
 
   // Cloudflare D1 database
   "d1_databases": [
     {
       "binding": "DB",
       "database_name": "alloymc-db",
-      "database_id": "REPLACE_WITH_D1_DATABASE_ID"
+      "database_id": "c70928f2-b167-4a1f-a759-c4d37ccc5666"
     }
   ],
 
@@ -26,7 +27,7 @@
   "kv_namespaces": [
     {
       "binding": "SESSIONS",
-      "id": "REPLACE_WITH_KV_NAMESPACE_ID"
+      "id": "aba58bb5f7724aa6a3389d9e9736a395"
     }
   ],
 
@@ -34,5 +35,17 @@
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
-  }
+  },
+
+  // Custom domain
+  "routes": [
+    {
+      "pattern": "alloymc.net/*",
+      "zone_name": "alloymc.net"
+    },
+    {
+      "pattern": "alloymc.net",
+      "zone_name": "alloymc.net"
+    }
+  ]
 }

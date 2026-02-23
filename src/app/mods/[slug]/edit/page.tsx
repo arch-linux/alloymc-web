@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect, use } from "react";
+import { useState, useEffect, useRef, use } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import { MOD_CATEGORIES } from "@/lib/constants";
 import { MarkdownEditor } from "@/components/mods/MarkdownEditor";
+import { ImageIcon } from "@/components/icons";
 
 export default function EditModPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
@@ -14,6 +15,12 @@ export default function EditModPage({ params }: { params: Promise<{ slug: string
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [webhookUrl, setWebhookUrl] = useState("");
+  const [webhookSecret, setWebhookSecret] = useState<string | null>(null);
+  const [regenLoading, setRegenLoading] = useState(false);
+  const [iconUrl, setIconUrl] = useState<string | null>(null);
+  const [iconUploading, setIconUploading] = useState(false);
+  const [iconError, setIconError] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [form, setForm] = useState({
     name: "",
@@ -45,6 +52,7 @@ export default function EditModPage({ params }: { params: Promise<{ slug: string
         category: data.mod.category,
         useGithubReadme: data.mod.useGithubReadme,
       });
+      setIconUrl(data.mod.iconUrl);
       setWebhookUrl(`${window.location.origin}/api/webhooks/github/${slug}`);
       setLoading(false);
     }
@@ -58,6 +66,57 @@ export default function EditModPage({ params }: { params: Promise<{ slug: string
       delete next[field];
       return next;
     });
+  }
+
+  async function handleIconUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIconError("");
+    setIconUploading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("type", "icon");
+
+      const res = await fetch(`/api/mods/${slug}/images`, {
+        method: "POST",
+        body: formData,
+      });
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const data = (await res.json()) as any;
+      if (!res.ok) {
+        setIconError(data.error || "Upload failed");
+        return;
+      }
+
+      setIconUrl(data.url);
+    } catch {
+      setIconError("Network error");
+    } finally {
+      setIconUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  }
+
+  async function handleRegenSecret() {
+    if (!confirm("Regenerate webhook secret? Your existing GitHub webhook will stop working until you update it with the new secret.")) return;
+
+    setRegenLoading(true);
+    try {
+      const res = await fetch(`/api/mods/${slug}/webhook-secret`, { method: "POST" });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const data = (await res.json()) as any;
+      if (res.ok) {
+        setWebhookSecret(data.secret);
+      }
+    } catch {
+      // ignore
+    } finally {
+      setRegenLoading(false);
+    }
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -124,6 +183,51 @@ export default function EditModPage({ params }: { params: Promise<{ slug: string
               {errors._form}
             </div>
           )}
+
+          {/* Icon Upload */}
+          <div>
+            <label className="text-sm font-medium text-stone-200 block mb-2">
+              Mod Icon
+            </label>
+            <div className="flex items-center gap-4">
+              <div
+                className="w-20 h-20 rounded-xl border-2 border-dashed border-obsidian-600 bg-obsidian-900 flex items-center justify-center overflow-hidden cursor-pointer hover:border-ember/40 transition-colors"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                {iconUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={iconUrl.startsWith("/images/") ? `/api${iconUrl}` : iconUrl}
+                    alt="Mod icon"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <ImageIcon className="w-8 h-8 text-obsidian-500" />
+                )}
+              </div>
+              <div className="flex-1">
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={iconUploading}
+                  className="px-4 py-2 rounded-lg bg-obsidian-800 text-stone-300 text-sm font-medium border border-obsidian-700 hover:border-obsidian-600 disabled:opacity-50 transition-colors"
+                >
+                  {iconUploading ? "Uploading..." : iconUrl ? "Change Icon" : "Upload Icon"}
+                </button>
+                <p className="text-xs text-stone-500 mt-1.5">
+                  PNG, JPEG, WebP, or GIF. Max 512KB.
+                </p>
+                {iconError && <p className="text-xs text-red-400 mt-1">{iconError}</p>}
+              </div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/png,image/jpeg,image/webp,image/gif"
+                onChange={handleIconUpload}
+                className="hidden"
+              />
+            </div>
+          </div>
 
           {/* Name */}
           <div>
@@ -228,6 +332,27 @@ export default function EditModPage({ params }: { params: Promise<{ slug: string
               <p className="text-xs text-stone-500 mt-2">
                 Point your GitHub webhook to this URL with &quot;Releases&quot; events.
               </p>
+
+              {webhookSecret && (
+                <div className="mt-3">
+                  <p className="text-xs font-medium text-stone-300 mb-1">New Webhook Secret:</p>
+                  <div className="terminal rounded-lg px-3 py-2 font-mono text-xs text-forge-gold break-all select-all">
+                    {webhookSecret}
+                  </div>
+                  <p className="text-xs text-yellow-500/80 mt-1">
+                    Copy this now — it won&apos;t be shown again.
+                  </p>
+                </div>
+              )}
+
+              <button
+                type="button"
+                onClick={handleRegenSecret}
+                disabled={regenLoading}
+                className="mt-3 px-3 py-1.5 rounded-lg border border-obsidian-600 text-xs text-stone-400 hover:text-stone-200 hover:border-obsidian-500 disabled:opacity-50 transition-colors"
+              >
+                {regenLoading ? "Regenerating..." : "Regenerate Webhook Secret"}
+              </button>
             </div>
           )}
 

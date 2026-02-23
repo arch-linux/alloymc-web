@@ -4,7 +4,8 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { MoltenCracks } from "@/components/effects/MoltenCracks";
-import { DownloadIcon, TerminalIcon, PackageIcon } from "@/components/icons";
+import { CpuIcon, DownloadIcon, TerminalIcon, PackageIcon } from "@/components/icons";
+import { SetupInstructions } from "@/components/ui/SetupInstructions";
 
 export const metadata: Metadata = {
   title: "Downloads",
@@ -84,6 +85,67 @@ export default function DownloadsPage() {
               </Card>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="pb-24 px-6">
+        <div className="mx-auto max-w-4xl">
+          <SectionHeading
+            title="Alloy MCP"
+            subtitle="Give Claude complete control over your Alloy mod projects. 59 tools across 11 domains — project scaffolding, file management, Git, builds, block/GUI/animation editors, modpacks, and code intelligence."
+          />
+          <Card glow className="flex flex-col sm:flex-row items-start gap-6">
+            <div className="p-4 rounded-xl bg-ember/10 border border-ember/20 shrink-0">
+              <CpuIcon className="w-8 h-8 text-ember" />
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-3 mb-2">
+                <h2 className="font-heading text-xl font-semibold text-stone-100">
+                  Alloy MCP Server
+                </h2>
+                <Badge variant="ember">v0.1.0</Badge>
+              </div>
+              <p className="text-stone-400 mb-4 leading-relaxed">
+                Standalone MCP server binary that connects Claude to every Alloy IDE capability. Create projects, edit blocks, generate code, manage modpacks, run builds — all through natural language.
+              </p>
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge>macOS</Badge>
+                <Badge>59 Tools</Badge>
+                <Badge>4 Resources</Badge>
+              </div>
+              <SetupInstructions
+                steps={[
+                  {
+                    label: "Download the binary and make it executable.",
+                    code: "curl -L https://github.com/arch-linux/alloy/releases/download/v0.0.2/alloy-mcp -o /usr/local/bin/alloy-mcp && chmod +x /usr/local/bin/alloy-mcp",
+                  },
+                  {
+                    label: "Add to your Claude Code MCP config at ~/.claude/mcp.json:",
+                    code: `{
+  "mcpServers": {
+    "alloy-mcp": {
+      "command": "alloy-mcp",
+      "args": ["--project", "/path/to/your/alloy-project"]
+    }
+  }
+}`,
+                  },
+                  {
+                    label: "Restart Claude Code. All 59 tools will appear in /mcp.",
+                  },
+                ]}
+              />
+            </div>
+            <Button
+              href="https://github.com/arch-linux/alloy/releases/download/v0.0.2/alloy-mcp"
+              external
+              variant="primary"
+              size="sm"
+              className="shrink-0"
+            >
+              Download
+            </Button>
+          </Card>
         </div>
       </section>
 

@@ -1,6 +1,7 @@
 const GITHUB_AUTH_URL = "https://github.com/login/oauth/authorize";
 const GITHUB_TOKEN_URL = "https://github.com/login/oauth/access_token";
 const GITHUB_USER_URL = "https://api.github.com/user";
+const USER_AGENT = "AlloyMC/1.0";
 
 interface GitHubUser {
   id: number;
@@ -30,6 +31,7 @@ export async function exchangeCodeForToken(
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
+      "User-Agent": USER_AGENT,
     },
     body: JSON.stringify({
       client_id: clientId,
@@ -38,9 +40,9 @@ export async function exchangeCodeForToken(
     }),
   });
 
-  const data = await res.json() as { access_token?: string; error?: string };
+  const data = await res.json() as { access_token?: string; error?: string; error_description?: string };
   if (!data.access_token) {
-    throw new Error(data.error || "Failed to exchange code for token");
+    throw new Error(data.error_description || data.error || "Failed to exchange code for token");
   }
   return data.access_token;
 }
@@ -50,11 +52,13 @@ export async function getGitHubUser(accessToken: string): Promise<GitHubUser> {
     headers: {
       Authorization: `Bearer ${accessToken}`,
       Accept: "application/vnd.github+json",
+      "User-Agent": USER_AGENT,
     },
   });
 
   if (!res.ok) {
-    throw new Error("Failed to fetch GitHub user");
+    const text = await res.text();
+    throw new Error(`GitHub API ${res.status}: ${text}`);
   }
 
   return res.json() as Promise<GitHubUser>;

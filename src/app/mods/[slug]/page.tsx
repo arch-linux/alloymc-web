@@ -1,5 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { eq, and, desc } from "drizzle-orm";
+import { getDb } from "@/lib/db";
+import { mods, users, modVersions, stars } from "@/lib/db/schema";
+import { getEnv } from "@/lib/cloudflare";
+import { getSession } from "@/lib/auth/session";
 import { ModPageHeader } from "@/components/mods/ModPageHeader";
 import { VersionList } from "@/components/mods/VersionList";
 import { CommentSection } from "@/components/mods/CommentSection";
@@ -9,14 +14,57 @@ import { fetchReadme, parseGithubRepo } from "@/lib/utils/github";
 type PageProps = { params: Promise<{ slug: string }> };
 
 async function getModData(slug: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://alloymc.net";
-  const res = await fetch(`${baseUrl}/api/mods/${slug}`, {
-    cache: "no-store",
-  });
+  const env = await getEnv();
+  const db = getDb(env.DB);
 
-  if (!res.ok) return null;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return (await res.json()) as any;
+  const mod = await db
+    .select({
+      id: mods.id,
+      slug: mods.slug,
+      name: mods.name,
+      shortDescription: mods.shortDescription,
+      longDescription: mods.longDescription,
+      githubRepo: mods.githubRepo,
+      ownerId: mods.ownerId,
+      iconUrl: mods.iconUrl,
+      bannerUrl: mods.bannerUrl,
+      category: mods.category,
+      downloadCount: mods.downloadCount,
+      starCount: mods.starCount,
+      useGithubReadme: mods.useGithubReadme,
+      createdAt: mods.createdAt,
+      updatedAt: mods.updatedAt,
+      ownerUsername: users.githubUsername,
+      ownerAvatar: users.avatarUrl,
+      ownerDisplayName: users.displayName,
+    })
+    .from(mods)
+    .innerJoin(users, eq(mods.ownerId, users.id))
+    .where(eq(mods.slug, slug))
+    .get();
+
+  if (!mod) return null;
+
+  const versions = await db
+    .select()
+    .from(modVersions)
+    .where(eq(modVersions.modId, mod.id))
+    .orderBy(desc(modVersions.createdAt));
+
+  let hasStarred = false;
+  let isOwner = false;
+  const session = await getSession(env.SESSIONS, env.SESSION_SECRET);
+  if (session) {
+    isOwner = session.userId === mod.ownerId;
+    const star = await db
+      .select({ id: stars.id })
+      .from(stars)
+      .where(and(eq(stars.userId, session.userId), eq(stars.modId, mod.id)))
+      .get();
+    hasStarred = !!star;
+  }
+
+  return { mod, versions, hasStarred, isOwner };
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {

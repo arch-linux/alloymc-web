@@ -107,6 +107,102 @@ export const reports = sqliteTable(
   ]
 );
 
+// ─── Packs ────────────────────────────────────────────────────────────────────
+export const packs = sqliteTable(
+  "packs",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    slug: text("slug").notNull().unique(),
+    name: text("name").notNull(),
+    shortDescription: text("short_description").notNull(),
+    longDescription: text("long_description"),
+    githubRepo: text("github_repo"),
+    ownerId: integer("owner_id").notNull().references(() => users.id),
+    iconUrl: text("icon_url"),
+    bannerUrl: text("banner_url"),
+    category: text("category").notNull(),
+    downloadCount: integer("download_count").notNull().default(0),
+    starCount: integer("star_count").notNull().default(0),
+    useGithubReadme: integer("use_github_readme", { mode: "boolean" }).notNull().default(false),
+    webhookSecret: text("webhook_secret"),
+    createdAt: integer("created_at", { mode: "timestamp" }).notNull().$defaultFn(() => new Date()),
+    updatedAt: integer("updated_at", { mode: "timestamp" }).notNull().$defaultFn(() => new Date()),
+  },
+  (table) => [
+    index("packs_owner_id_idx").on(table.ownerId),
+    index("packs_category_idx").on(table.category),
+  ]
+);
+
+// ─── Pack Versions ──────────────────────────────────────────────────────────
+export const packVersions = sqliteTable(
+  "pack_versions",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    packId: integer("pack_id").notNull().references(() => packs.id, { onDelete: "cascade" }),
+    version: text("version").notNull(),
+    changelog: text("changelog"),
+    downloadUrl: text("download_url").notNull(),
+    minecraftVersion: text("minecraft_version"),
+    fileSize: integer("file_size"),
+    createdAt: integer("created_at", { mode: "timestamp" }).notNull().$defaultFn(() => new Date()),
+  },
+  (table) => [
+    index("pack_versions_pack_id_idx").on(table.packId),
+  ]
+);
+
+// ─── Pack Stars ─────────────────────────────────────────────────────────────
+export const packStars = sqliteTable(
+  "pack_stars",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    userId: integer("user_id").notNull().references(() => users.id),
+    packId: integer("pack_id").notNull().references(() => packs.id, { onDelete: "cascade" }),
+    createdAt: integer("created_at", { mode: "timestamp" }).notNull().$defaultFn(() => new Date()),
+  },
+  (table) => [
+    uniqueIndex("pack_stars_user_pack_idx").on(table.userId, table.packId),
+  ]
+);
+
+// ─── Pack Comments ──────────────────────────────────────────────────────────
+export const packComments = sqliteTable(
+  "pack_comments",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    userId: integer("user_id").notNull().references(() => users.id),
+    packId: integer("pack_id").notNull().references(() => packs.id, { onDelete: "cascade" }),
+    content: text("content").notNull(),
+    createdAt: integer("created_at", { mode: "timestamp" }).notNull().$defaultFn(() => new Date()),
+    updatedAt: integer("updated_at", { mode: "timestamp" }).notNull().$defaultFn(() => new Date()),
+    deletedAt: integer("deleted_at", { mode: "timestamp" }),
+  },
+  (table) => [
+    index("pack_comments_pack_id_idx").on(table.packId),
+  ]
+);
+
+// ─── Pack Reports ───────────────────────────────────────────────────────────
+export const packReports = sqliteTable(
+  "pack_reports",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    reporterId: integer("reporter_id").notNull().references(() => users.id),
+    packId: integer("pack_id").notNull().references(() => packs.id, { onDelete: "cascade" }),
+    reason: text("reason", { enum: ["malware", "spam", "copyright", "other"] }).notNull(),
+    description: text("description"),
+    status: text("status", { enum: ["open", "reviewing", "resolved", "dismissed"] }).notNull().default("open"),
+    createdAt: integer("created_at", { mode: "timestamp" }).notNull().$defaultFn(() => new Date()),
+    resolvedAt: integer("resolved_at", { mode: "timestamp" }),
+    resolvedBy: integer("resolved_by").references(() => users.id),
+  },
+  (table) => [
+    index("pack_reports_pack_id_idx").on(table.packId),
+    index("pack_reports_status_idx").on(table.status),
+  ]
+);
+
 // ─── Type Exports ────────────────────────────────────────────────────────────
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
@@ -116,3 +212,9 @@ export type ModVersion = typeof modVersions.$inferSelect;
 export type Star = typeof stars.$inferSelect;
 export type Comment = typeof comments.$inferSelect;
 export type Report = typeof reports.$inferSelect;
+export type Pack = typeof packs.$inferSelect;
+export type NewPack = typeof packs.$inferInsert;
+export type PackVersion = typeof packVersions.$inferSelect;
+export type PackStar = typeof packStars.$inferSelect;
+export type PackComment = typeof packComments.$inferSelect;
+export type PackReport = typeof packReports.$inferSelect;

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { AlloyLogo, MenuIcon, CloseIcon, GitHubIcon } from "@/components/icons";
 import { NAV_ITEMS, SITE } from "@/lib/constants";
@@ -9,6 +10,9 @@ import { UserMenu } from "@/components/auth/UserMenu";
 
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const pathname = usePathname();
+  const isModsSection = pathname.startsWith("/mods");
+  const isPacksSection = pathname.startsWith("/packs");
 
   return (
     <header className="sticky top-0 z-50 border-b border-obsidian-700/50 bg-obsidian-950/80 backdrop-blur-xl">
@@ -48,7 +52,7 @@ export function Header() {
           <Button href="/downloads" size="sm">
             Download
           </Button>
-          <UserMenu />
+          {(isModsSection || isPacksSection) && <UserMenu />}
         </div>
 
         {/* Mobile hamburger */}

@@ -51,6 +51,35 @@ export function validateCategory(category: string): string | null {
   return null;
 }
 
+export const PACK_CATEGORIES = [
+  "adventure",
+  "tech",
+  "magic",
+  "rpg",
+  "survival",
+  "hardcore",
+  "skyblock",
+  "kitchen-sink",
+  "lightweight",
+  "other",
+] as const;
+
+export type PackCategory = (typeof PACK_CATEGORIES)[number];
+
+export function validatePackName(name: string): string | null {
+  if (!name || name.length < 2 || name.length > 100) {
+    return "Name must be 2-100 characters";
+  }
+  return null;
+}
+
+export function validatePackCategory(category: string): string | null {
+  if (!PACK_CATEGORIES.includes(category as PackCategory)) {
+    return "Invalid category";
+  }
+  return null;
+}
+
 export function validateGithubRepo(repo: string): string | null {
   if (!repo) return null; // optional
   if (!/^[a-zA-Z0-9_.-]+\/[a-zA-Z0-9_.-]+$/.test(repo)) {

@@ -32,12 +32,24 @@ export const metadata: Metadata = {
     "A from-scratch Minecraft modding ecosystem. New mod loader, modding API, mappings pipeline, modpack format, and launcher — built to make the old guard obsolete.",
   metadataBase: new URL("https://alloymc.net"),
   openGraph: {
-    title: "Alloy — Forged with Alloy",
+    title: {
+      default: "Alloy — Forged with Alloy",
+      template: "%s — Alloy",
+    },
     description:
       "A from-scratch Minecraft modding ecosystem built for the future.",
     url: "https://alloymc.net",
     siteName: "Alloy",
     type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: {
+      default: "Alloy — Forged with Alloy",
+      template: "%s — Alloy",
+    },
+    description:
+      "A from-scratch Minecraft modding ecosystem built for the future.",
   },
 };
 

@@ -6,6 +6,11 @@ import { SearchBar } from "@/components/mods/SearchBar";
 import { CategoryFilter } from "@/components/mods/CategoryFilter";
 import { SortSelect } from "@/components/mods/SortSelect";
 import { PackageIcon } from "@/components/icons";
+import { getDb } from "@/lib/db";
+import { mods, users, stars } from "@/lib/db/schema";
+import { eq, like, desc, and, sql, inArray } from "drizzle-orm";
+import { getEnv } from "@/lib/cloudflare";
+import { getSession } from "@/lib/auth/session";
 
 export const metadata: Metadata = {
   title: "Mod Explorer",
@@ -17,50 +22,150 @@ async function ModResults({
 }: {
   searchParams: Record<string, string | undefined>;
 }) {
-  const params = new URLSearchParams();
-  if (searchParams.q) params.set("q", searchParams.q);
-  if (searchParams.category) params.set("category", searchParams.category);
-  if (searchParams.sort) params.set("sort", searchParams.sort);
-  if (searchParams.page) params.set("page", searchParams.page);
+  const env = await getEnv();
+  const db = getDb(env.DB);
+  const session = await getSession(env.SESSIONS, env.SESSION_SECRET);
 
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://alloymc.net";
-  const res = await fetch(`${baseUrl}/api/mods?${params.toString()}`, {
-    cache: "no-store",
-  });
+  const q = searchParams.q || "";
+  const category = searchParams.category || "";
+  const sort = searchParams.sort || "newest";
+  const owner = searchParams.owner || "";
+  const starred = searchParams.starred || "";
+  const page = Math.max(1, parseInt(searchParams.page || "1"));
+  const limit = 20;
+  const offset = (page - 1) * limit;
 
-  if (!res.ok) {
-    return <ModGrid mods={[]} emptyMessage="Failed to load mods" />;
+  const conditions = [];
+  if (q) {
+    conditions.push(like(mods.name, `%${q}%`));
+  }
+  if (category) {
+    conditions.push(eq(mods.category, category));
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const data = (await res.json()) as any;
-  const { mods, pagination } = data;
+  // Filter by owner (current user's mods)
+  if (owner === "me" && session) {
+    conditions.push(eq(mods.ownerId, session.userId));
+  }
+
+  // Filter by starred (current user's starred mods)
+  if (starred === "true" && session) {
+    const starredMods = await db
+      .select({ modId: stars.modId })
+      .from(stars)
+      .where(eq(stars.userId, session.userId));
+    const starredIds = starredMods.map((s) => s.modId);
+    if (starredIds.length > 0) {
+      conditions.push(inArray(mods.id, starredIds));
+    } else {
+      // No starred mods — return empty
+      conditions.push(sql`0 = 1`);
+    }
+  }
+
+  const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
+
+  const orderMap = {
+    downloads: desc(mods.downloadCount),
+    stars: desc(mods.starCount),
+    newest: desc(mods.createdAt),
+    updated: desc(mods.updatedAt),
+  } as const;
+  const orderBy = orderMap[sort as keyof typeof orderMap] ?? desc(mods.createdAt);
+
+  const [results, countResult] = await Promise.all([
+    db
+      .select({
+        slug: mods.slug,
+        name: mods.name,
+        shortDescription: mods.shortDescription,
+        iconUrl: mods.iconUrl,
+        category: mods.category,
+        downloadCount: mods.downloadCount,
+        starCount: mods.starCount,
+        ownerUsername: users.githubUsername,
+        ownerAvatar: users.avatarUrl,
+      })
+      .from(mods)
+      .innerJoin(users, eq(mods.ownerId, users.id))
+      .where(whereClause)
+      .orderBy(orderBy)
+      .limit(limit)
+      .offset(offset),
+    db
+      .select({ count: sql<number>`count(*)` })
+      .from(mods)
+      .where(whereClause),
+  ]);
+
+  const total = countResult[0]?.count ?? 0;
+  const totalPages = Math.ceil(total / limit);
+
+  if (results.length === 0) {
+    let heading = "No mods yet";
+    let description = "Be the first to list a mod on Alloy. Point it at your GitHub repo and we handle the rest.";
+    let ctaLabel = "Submit the First Mod";
+    let ctaHref = "/mods/new";
+
+    if (owner === "me") {
+      heading = "You haven\u2019t submitted any mods";
+      description = "List your first mod — point it at a GitHub repo and you\u2019re live.";
+      ctaLabel = "Submit a Mod";
+    } else if (starred === "true") {
+      heading = "No starred mods";
+      description = "Browse the mod explorer and star the ones you like.";
+      ctaLabel = "Browse Mods";
+      ctaHref = "/mods";
+    } else if (q || category) {
+      heading = "No mods found";
+      description = "Try adjusting your search or filters.";
+      ctaLabel = "Clear Filters";
+      ctaHref = "/mods";
+    }
+
+    return (
+      <div className="flex flex-col items-center justify-center py-20 text-center">
+        <PackageIcon className="w-16 h-16 text-obsidian-600 mb-6" />
+        <h3 className="font-heading text-2xl font-bold text-stone-200 mb-2">
+          {heading}
+        </h3>
+        <p className="text-stone-400 text-lg mb-6 max-w-md">
+          {description}
+        </p>
+        <Link
+          href={ctaHref}
+          className="px-6 py-3 rounded-lg bg-ember text-obsidian-950 font-medium hover:bg-ember-light transition-colors"
+        >
+          {ctaLabel}
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <>
-      <ModGrid mods={mods} />
+      <ModGrid mods={results} />
 
-      {/* Pagination */}
-      {pagination.totalPages > 1 && (
+      {totalPages > 1 && (
         <div className="flex items-center justify-center gap-2 mt-8">
-          {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map((page) => {
-            const p = new URLSearchParams();
-            if (searchParams.q) p.set("q", searchParams.q);
-            if (searchParams.category) p.set("category", searchParams.category);
-            if (searchParams.sort) p.set("sort", searchParams.sort);
-            p.set("page", String(page));
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => {
+            const params = new URLSearchParams();
+            if (searchParams.q) params.set("q", searchParams.q);
+            if (searchParams.category) params.set("category", searchParams.category);
+            if (searchParams.sort) params.set("sort", searchParams.sort);
+            params.set("page", String(p));
 
             return (
               <Link
-                key={page}
-                href={`/mods?${p.toString()}`}
+                key={p}
+                href={`/mods?${params.toString()}`}
                 className={`w-10 h-10 rounded-lg flex items-center justify-center text-sm font-medium transition-colors ${
-                  page === pagination.page
+                  p === page
                     ? "bg-ember text-obsidian-950"
                     : "bg-obsidian-800 text-stone-400 hover:text-stone-200 hover:bg-obsidian-700 border border-obsidian-700"
                 }`}
               >
-                {page}
+                {p}
               </Link>
             );
           })}

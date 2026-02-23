@@ -11,6 +11,7 @@ const footerLinks = {
   ],
   Resources: [
     { label: "Documentation", href: "/docs" },
+    { label: "Pack Explorer", href: "/packs" },
     { label: "Community", href: "/community" },
     { label: "GitHub", href: SITE.github, external: true },
   ],

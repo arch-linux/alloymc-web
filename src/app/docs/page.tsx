@@ -11,6 +11,7 @@ import {
   MapIcon,
   TerminalIcon,
   LayersIcon,
+  CpuIcon,
 } from "@/components/icons";
 
 export const metadata: Metadata = {
@@ -23,43 +24,43 @@ const categories = [
     icon: <BookIcon className="w-7 h-7 text-ember" />,
     title: "Getting Started",
     description: "Installation, setup, and your first mod.",
-    href: "/getting-started",
+    href: "/docs/getting-started",
     available: true,
   },
   {
     icon: <LayersIcon className="w-7 h-7 text-ember" />,
     title: "API Reference",
     description: "Complete reference for the Alloy modding API.",
-    href: "#",
-    available: false,
+    href: "/docs/api-overview",
+    available: true,
+  },
+  {
+    icon: <TerminalIcon className="w-7 h-7 text-ember" />,
+    title: "Commands & Systems",
+    description: "Commands, permissions, scheduling, and other systems.",
+    href: "/docs/commands",
+    available: true,
   },
   {
     icon: <PackageIcon className="w-7 h-7 text-ember" />,
-    title: "Mod Loader",
-    description: "How the Alloy mod loader works under the hood.",
-    href: "#",
-    available: false,
+    title: "Configuration",
+    description: "Mod manifest, configuration API, and project setup.",
+    href: "/docs/configuration",
+    available: true,
   },
   {
     icon: <MapIcon className="w-7 h-7 text-ember" />,
     title: "Mappings",
     description: "Understanding Alloy's automated mappings pipeline.",
-    href: "#",
-    available: false,
-  },
-  {
-    icon: <TerminalIcon className="w-7 h-7 text-ember" />,
-    title: "Gradle Plugin",
-    description: "Configuration and tasks for the Alloy Gradle plugin.",
-    href: "#",
-    available: false,
+    href: "/docs/mappings",
+    available: true,
   },
   {
     icon: <ZapIcon className="w-7 h-7 text-ember" />,
     title: "Examples",
     description: "Example mods and code snippets to learn from.",
-    href: "#",
-    available: false,
+    href: "/docs/examples",
+    available: true,
   },
 ];
 
@@ -76,6 +77,12 @@ export default function DocsPage() {
             Guides, references, and tutorials for building with Alloy.
           </p>
           <Badge variant="gold">Under Active Development</Badge>
+          <div className="mt-6">
+            <Button href="/docs/agent" variant="ghost" size="sm" className="gap-2 border border-obsidian-700 hover:border-ember/40">
+              <CpuIcon className="w-4 h-4" />
+              Are you an agent?
+            </Button>
+          </div>
         </div>
       </section>
 
@@ -102,7 +109,7 @@ export default function DocsPage() {
                 <p className="text-sm text-stone-400 flex-1">{cat.description}</p>
                 {cat.available ? (
                   <Button href={cat.href} variant="ghost" size="sm">
-                    Read Guide &rarr;
+                    Read Docs &rarr;
                   </Button>
                 ) : (
                   <span className="text-xs text-stone-400/60">Coming soon</span>

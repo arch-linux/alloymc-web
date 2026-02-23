@@ -1,9 +1,10 @@
 import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
 
 const SESSION_COOKIE = "alloy_session";
 const SESSION_TTL = 60 * 60 * 24 * 7; // 7 days
 
-interface SessionData {
+export interface SessionData {
   userId: number;
   githubUsername: string;
   avatarUrl: string;
@@ -33,29 +34,33 @@ async function hmacVerify(value: string, signature: string, secret: string): Pro
   return mismatch === 0;
 }
 
+/**
+ * Creates a session in KV and sets the cookie on the provided response.
+ */
 export async function createSession(
   kv: KVNamespace,
   secret: string,
-  data: SessionData
-): Promise<string> {
+  data: SessionData,
+  response: NextResponse
+): Promise<void> {
   const sessionId = crypto.randomUUID();
   await kv.put(`session:${sessionId}`, JSON.stringify(data), { expirationTtl: SESSION_TTL });
 
   const signature = await hmacSign(sessionId, secret);
   const cookieValue = `${sessionId}.${signature}`;
 
-  const cookieStore = await cookies();
-  cookieStore.set(SESSION_COOKIE, cookieValue, {
+  response.cookies.set(SESSION_COOKIE, cookieValue, {
     httpOnly: true,
     secure: true,
     sameSite: "lax",
     path: "/",
     maxAge: SESSION_TTL,
   });
-
-  return sessionId;
 }
 
+/**
+ * Reads the session from the cookie (uses next/headers for reading in RSC/route handlers).
+ */
 export async function getSession(
   kv: KVNamespace,
   secret: string
@@ -79,9 +84,13 @@ export async function getSession(
   return JSON.parse(raw) as SessionData;
 }
 
+/**
+ * Destroys a session and clears the cookie on the provided response.
+ */
 export async function destroySession(
   kv: KVNamespace,
-  secret: string
+  secret: string,
+  response: NextResponse
 ): Promise<void> {
   const cookieStore = await cookies();
   const cookie = cookieStore.get(SESSION_COOKIE);
@@ -97,7 +106,7 @@ export async function destroySession(
     }
   }
 
-  cookieStore.set(SESSION_COOKIE, "", {
+  response.cookies.set(SESSION_COOKIE, "", {
     httpOnly: true,
     secure: true,
     sameSite: "lax",

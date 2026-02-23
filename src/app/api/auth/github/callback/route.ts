@@ -66,16 +66,22 @@ export async function GET(request: NextRequest) {
       userId = result[0].id;
     }
 
-    // Create session
+    // Create redirect response first, then attach session cookie to it
+    const response = NextResponse.redirect(new URL("/mods", request.url));
+
     await createSession(env.SESSIONS, env.SESSION_SECRET, {
       userId,
       githubUsername: ghUser.login,
       avatarUrl: ghUser.avatar_url,
       displayName: ghUser.name || ghUser.login,
-    });
+    }, response);
 
-    return NextResponse.redirect(new URL("/mods", request.url));
-  } catch {
-    return NextResponse.redirect(new URL("/mods?error=auth_failed", request.url));
+    return response;
+  } catch (err) {
+    console.error("OAuth callback error:", err);
+    const message = err instanceof Error ? err.message : "unknown";
+    return NextResponse.redirect(
+      new URL(`/mods?error=auth_failed&detail=${encodeURIComponent(message)}`, request.url)
+    );
   }
 }
